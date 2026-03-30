@@ -44,11 +44,19 @@
   </header>
   <main>
     <section class="hero hero-modern position-relative overflow-hidden" id="home">
-      <div class="hero-slider">
+      <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true" data-bs-pause="hover" data-bs-keyboard="true" aria-label="Featured highlights">
+        <div class="carousel-indicators hero-carousel-indicators">
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1 — Welcome"></button>
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2 — Haunted Clan: Geng Jin"></button>
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3 — LoNeX"></button>
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4 — App services"></button>
+        </div>
+
+        <div class="carousel-inner">
         <!-- Slide 1: Welcome to Moje Media -->
-        <div class="slide active" data-slide="1">
+        <div class="carousel-item active">
           <div class="container py-4 py-lg-5">
-            <div class="row min-vh-100 align-items-center g-4 g-xl-5">
+            <div class="row hero-slide-row align-items-center g-4 g-xl-5">
               <div class="col-lg-6 order-2 order-lg-1">
                 <div class="hero-text pe-lg-4">
                   <span class="hero-eyebrow d-inline-flex align-items-center gap-2 rounded-pill px-3 py-2 mb-3 small fw-semibold text-uppercase tracking-wide">Slide 01</span>
@@ -62,7 +70,37 @@
                 </div>
               </div>
               <div class="col-lg-6 order-1 order-lg-2">
-                <div class="hero-visual-stack position-relative mx-auto" style="max-width: 520px;">
+                <!-- Mobile / tablet: contained grid (no absolute clipping) -->
+                <div class="d-lg-none mb-3 mb-lg-0">
+                  <div class="row row-cols-3 g-2 g-sm-3 hero-mobile-feature-cards">
+                    <div class="col">
+                      <div class="card border-0 shadow-sm rounded-4 h-100 hero-mobile-feature-card">
+                        <div class="card-body text-center py-3 px-2">
+                          <div class="hero-mobile-card-icon mb-1" aria-hidden="true">🚀</div>
+                          <h3 class="small fw-bold mb-0 text-dark lh-sm text-break">Innovation</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card border-0 shadow-sm rounded-4 h-100 hero-mobile-feature-card">
+                        <div class="card-body text-center py-3 px-2">
+                          <div class="hero-mobile-card-icon mb-1" aria-hidden="true">💡</div>
+                          <h3 class="small fw-bold mb-0 text-dark lh-sm text-break">Creativity</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card border-0 shadow-sm rounded-4 h-100 hero-mobile-feature-card">
+                        <div class="card-body text-center py-3 px-2">
+                          <div class="hero-mobile-card-icon mb-1" aria-hidden="true">⚡</div>
+                          <h3 class="small fw-bold mb-0 text-dark lh-sm text-break">Technology</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Desktop: floating stack -->
+                <div class="hero-visual-stack position-relative mx-auto d-none d-lg-block" style="max-width: 520px;">
                   <div class="position-absolute top-50 start-50 translate-middle hero-logo-watermark">
                     <img src="assets/moje-media-logo.png" alt="" class="opacity-25" width="420" height="auto" aria-hidden="true">
                   </div>
@@ -93,9 +131,9 @@
         </div>
 
         <!-- Slide 2: Haunted Clan — Geng Jin (film) -->
-        <div class="slide" data-slide="2">
+        <div class="carousel-item">
           <div class="container py-4 py-lg-5">
-            <div class="row min-vh-100 align-items-center">
+            <div class="row hero-slide-row align-items-center">
               <div class="col-12">
                 <div class="row g-0 rounded-4 overflow-hidden shadow-lg hero-film-card border border-light">
                   <div class="col-lg-5 bg-dark text-white p-4 p-lg-5 d-flex flex-column justify-content-center">
@@ -124,9 +162,9 @@
         </div>
 
         <!-- Slide 3: LoNeX (Our App) -->
-        <div class="slide" data-slide="3">
+        <div class="carousel-item">
           <div class="container py-4 py-lg-5">
-            <div class="row min-vh-100 align-items-center g-4 g-xl-5">
+            <div class="row hero-slide-row align-items-center g-4 g-xl-5">
               <div class="col-lg-6">
                 <div class="hero-text pe-lg-4">
                   <span class="hero-eyebrow d-inline-flex align-items-center gap-2 rounded-pill px-3 py-2 mb-3 small fw-semibold text-uppercase tracking-wide">Slide 03 · Our App</span>
@@ -197,9 +235,9 @@
         </div>
 
         <!-- Slide 4: App development services -->
-        <div class="slide" data-slide="4">
+        <div class="carousel-item">
           <div class="container py-4 py-lg-5">
-            <div class="row min-vh-100 align-items-center g-4 g-xl-5">
+            <div class="row hero-slide-row align-items-center g-4 g-xl-5">
               <div class="col-lg-6">
                 <div class="hero-text pe-lg-4">
                   <span class="hero-eyebrow d-inline-flex align-items-center gap-2 rounded-pill px-3 py-2 mb-3 small fw-semibold text-uppercase tracking-wide">Slide 04 · Services</span>
@@ -289,24 +327,22 @@
             </div>
           </div>
         </div>
-
-        <!-- Slide Controls -->
-        <button type="button" class="slider-control prev btn btn-light rounded-circle border" aria-label="Previous slide">
-          <svg width="24" height="24" fill="currentColor" aria-hidden="true">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-          </svg>
-        </button>
-        <button type="button" class="slider-control next btn btn-light rounded-circle border" aria-label="Next slide">
-          <svg width="24" height="24" fill="currentColor" aria-hidden="true">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-          </svg>
-        </button>
-        <div class="slider-nav">
-          <button type="button" class="nav-dot active" data-slide="1" aria-label="Slide 1 — Welcome"></button>
-          <button type="button" class="nav-dot" data-slide="2" aria-label="Slide 2 — Haunted Clan: Geng Jin"></button>
-          <button type="button" class="nav-dot" data-slide="3" aria-label="Slide 3 — LoNeX"></button>
-          <button type="button" class="nav-dot" data-slide="4" aria-label="Slide 4 — App services"></button>
         </div>
+
+        <button type="button" class="carousel-control-prev hero-carousel-chevron" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous slide">
+          <span class="hero-carousel-chevron-inner btn btn-light rounded-circle border shadow-sm" aria-hidden="true">
+            <svg width="24" height="24" fill="currentColor" aria-hidden="true">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </span>
+        </button>
+        <button type="button" class="carousel-control-next hero-carousel-chevron" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="Next slide">
+          <span class="hero-carousel-chevron-inner btn btn-light rounded-circle border shadow-sm" aria-hidden="true">
+            <svg width="24" height="24" fill="currentColor" aria-hidden="true">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </span>
+        </button>
       </div>
     </section>
 
