@@ -116,6 +116,7 @@
   const trailerSection = document.getElementById('trailer');
   const trailerVideo = document.getElementById('filmTrailerVideo');
   const trailerStatus = document.getElementById('filmTrailerStatus');
+  const trailerOverlayPlay = document.getElementById('filmTrailerOverlayPlay');
 
   if (trailerSection && trailerVideo && 'IntersectionObserver' in window) {
     var userInteracted = false;
@@ -123,6 +124,18 @@
     var desiredPlay = true;
     var pauseTimer = null;
     var canPlayOnce = false;
+
+    function hideOverlay() {
+      if (!trailerOverlayPlay) return;
+      trailerOverlayPlay.classList.add('is-hidden');
+    }
+
+    function showOverlay() {
+      if (!trailerOverlayPlay) return;
+      // Only show the overlay when user is in the trailer area.
+      if (!inView) return;
+      trailerOverlayPlay.classList.remove('is-hidden');
+    }
 
     function setStatus(msg) {
       if (!trailerStatus) return;
@@ -156,6 +169,7 @@
           // Keep it muted; user can press play/unmute manually.
           trailerVideo.muted = true;
           setStatus('Autoplay blocked — tap play.');
+          showOverlay();
         });
       }
     }
@@ -171,6 +185,7 @@
 
     trailerVideo.addEventListener('playing', function () {
       setStatus('');
+      hideOverlay();
     });
 
     trailerVideo.addEventListener('error', function () {
@@ -179,7 +194,23 @@
       } else {
         setStatus('Trailer error.');
       }
+      showOverlay();
     });
+
+    // Click-to-play fallback (overlay sits above the video)
+    if (trailerOverlayPlay) {
+      trailerOverlayPlay.addEventListener('click', function () {
+        userInteracted = true;
+        desiredPlay = true;
+        // User gesture: try unmuted first, but browser may still force muted.
+        trailerVideo.muted = false;
+        if (!trailerVideo.paused && !trailerVideo.ended) {
+          hideOverlay();
+          return;
+        }
+        attemptPlay();
+      });
+    }
 
     var trailerIo = new IntersectionObserver(
       function (entries) {
@@ -192,6 +223,7 @@
               pauseTimer = null;
             }
             attemptPlay();
+            if (trailerVideo.paused) showOverlay();
           } else {
             inView = false;
             if (pauseTimer) clearTimeout(pauseTimer);
@@ -199,6 +231,7 @@
             pauseTimer = setTimeout(function () {
               trailerVideo.pause();
             }, 250);
+            hideOverlay();
           }
         });
       },
