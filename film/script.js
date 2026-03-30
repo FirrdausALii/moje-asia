@@ -115,9 +115,19 @@
   /* —— Trailer: play in view, pause out of view (resume on return) —— */
   const trailerSection = document.getElementById('trailer');
   const trailerVideo = document.getElementById('filmTrailerVideo');
+  const trailerStatus = document.getElementById('filmTrailerStatus');
 
   if (trailerSection && trailerVideo && 'IntersectionObserver' in window) {
     var userInteracted = false;
+    var inView = false;
+    var desiredPlay = true;
+    var pauseTimer = null;
+    var canPlayOnce = false;
+
+    function setStatus(msg) {
+      if (!trailerStatus) return;
+      trailerStatus.textContent = msg || '';
+    }
 
     function markUserInteracted() {
       userInteracted = true;
@@ -130,32 +140,72 @@
     trailerVideo.addEventListener('keydown', markUserInteracted);
     trailerVideo.addEventListener('volumechange', markUserInteracted);
 
+    function attemptPlay() {
+      if (!desiredPlay) return;
+      if (!inView) return;
+      if (trailerVideo.readyState < 2) return; // HAVE_CURRENT_DATA-ish
+
+      if (!trailerVideo.paused && !trailerVideo.ended) return;
+
+      // Most browsers require muted autoplay; once user interacts they can unmute.
+      if (!userInteracted) trailerVideo.muted = true;
+
+      var playPromise = trailerVideo.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(function () {
+          // Keep it muted; user can press play/unmute manually.
+          trailerVideo.muted = true;
+          setStatus('Autoplay blocked — tap play.');
+        });
+      }
+    }
+
+    trailerVideo.addEventListener('canplay', function () {
+      canPlayOnce = true;
+      attemptPlay();
+    });
+
+    trailerVideo.addEventListener('loadedmetadata', function () {
+      setStatus('Loading trailer…');
+    });
+
+    trailerVideo.addEventListener('playing', function () {
+      setStatus('');
+    });
+
+    trailerVideo.addEventListener('error', function () {
+      if (trailerVideo.error) {
+        setStatus('Trailer error (code ' + trailerVideo.error.code + ').');
+      } else {
+        setStatus('Trailer error.');
+      }
+    });
+
     var trailerIo = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            // If browser blocks autoplay with audio, start muted until the user interacts.
-            if (trailerVideo.paused) {
-              if (!userInteracted) trailerVideo.muted = true;
-
-              var playPromise = trailerVideo.play();
-              if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(function () {
-                  trailerVideo.muted = true;
-                  trailerVideo.play().catch(function () {});
-                });
-              }
+            inView = true;
+            desiredPlay = true;
+            if (pauseTimer) {
+              clearTimeout(pauseTimer);
+              pauseTimer = null;
             }
+            attemptPlay();
           } else {
-            // Pause only; keep currentTime so it resumes on re-entry.
-            trailerVideo.pause();
+            inView = false;
+            if (pauseTimer) clearTimeout(pauseTimer);
+            // Debounce pause: avoid instantly pausing during layout shifts / tiny scroll changes.
+            pauseTimer = setTimeout(function () {
+              trailerVideo.pause();
+            }, 250);
           }
         });
       },
       {
         root: null,
-        threshold: 0.05,
-        rootMargin: '0px 0px -5% 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -10% 0px'
       }
     );
 
