@@ -115,27 +115,50 @@
   /* —— Trailer: play in view, pause out of view (resume on return) —— */
   const trailerSection = document.getElementById('trailer');
   const trailerVideo = document.getElementById('filmTrailerVideo');
+
   if (trailerSection && trailerVideo && 'IntersectionObserver' in window) {
+    var userInteracted = false;
+
+    function markUserInteracted() {
+      userInteracted = true;
+    }
+
+    // Treat common user interactions as "interaction" so autoplay can be less strict later.
+    trailerVideo.addEventListener('play', markUserInteracted);
+    trailerVideo.addEventListener('pointerdown', markUserInteracted);
+    trailerVideo.addEventListener('touchstart', markUserInteracted);
+    trailerVideo.addEventListener('keydown', markUserInteracted);
+    trailerVideo.addEventListener('volumechange', markUserInteracted);
+
     var trailerIo = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            trailerVideo.play().catch(function () {
-              if (trailerVideo.muted) return;
-              trailerVideo.muted = true;
-              trailerVideo.play().catch(function () {});
-            });
+            // If browser blocks autoplay with audio, start muted until the user interacts.
+            if (trailerVideo.paused) {
+              if (!userInteracted) trailerVideo.muted = true;
+
+              var playPromise = trailerVideo.play();
+              if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(function () {
+                  trailerVideo.muted = true;
+                  trailerVideo.play().catch(function () {});
+                });
+              }
+            }
           } else {
+            // Pause only; keep currentTime so it resumes on re-entry.
             trailerVideo.pause();
           }
         });
       },
       {
         root: null,
-        threshold: 0.22,
-        rootMargin: '0px 0px -8% 0px'
+        threshold: 0.05,
+        rootMargin: '0px 0px -5% 0px'
       }
     );
+
     trailerIo.observe(trailerSection);
   }
 
