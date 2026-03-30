@@ -239,7 +239,7 @@ body {
 }
 
 .hero-carousel .carousel-inner {
-  padding-bottom: 3.75rem;
+  padding-bottom: 0.5rem;
 }
 
 @media (min-width: 992px) {
@@ -258,30 +258,109 @@ body {
   }
 }
 
-/* Slide 1 — mobile feature cards (grid, no absolute overflow) */
-.hero-mobile-feature-card {
+/* Slide 1 — mobile horizontal pill strip */
+.hero-mobile-pill-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  margin-inline: -0.25rem;
+  padding-inline: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.hero-mobile-pill-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.hero-mobile-pill-scroll::-webkit-scrollbar-thumb {
+  background: rgba(26, 34, 54, 0.2);
+  border-radius: 999px;
+}
+
+.hero-mobile-pill {
+  scroll-snap-align: start;
+  min-width: 6.75rem;
+  max-width: 8rem;
+  padding: 0.85rem 0.75rem;
+  background: rgba(255, 255, 255, 0.92);
   border-left: 3px solid #f5b942;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 20px rgba(26, 34, 54, 0.08);
 }
 
-.hero-mobile-feature-card:active {
-  transform: scale(0.98);
+.hero-mobile-pill-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
 }
 
-.hero-mobile-card-icon {
-  font-size: clamp(1.35rem, 5vw, 1.75rem);
+.hero-mobile-pill-label {
+  font-size: 0.72rem;
+  letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
-.hero-mobile-feature-cards h3.small {
-  font-size: clamp(0.65rem, 2.8vw, 0.8rem);
-  letter-spacing: -0.02em;
+@media (min-width: 400px) {
+  .hero-mobile-pill {
+    min-width: 7.5rem;
+    padding: 1rem 0.85rem;
+  }
+  .hero-mobile-pill-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* LoNeX slide — mobile stacked card */
+.hero-mobile-lonex-card {
+  border-left: 4px solid #f5b942;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+}
+
+.hero-mobile-app-shot {
+  max-height: 280px;
+  width: auto;
+  object-fit: contain;
+}
+
+.hero-mobile-lonex-list .list-group-item {
+  background: transparent;
+}
+
+@media (max-width: 991.98px) {
+  .hero-modern .hero-text h1.display-5.hero-slide-title.hero-mobile-title,
+  .hero-modern .hero-text h2.display-5.hero-slide-title.hero-mobile-title {
+    font-size: clamp(1.65rem, 6.5vw, 2.15rem);
+    line-height: 1.15;
+  }
 }
 
 .film-poster-hero {
   width: 100%;
   object-fit: cover;
   max-height: 420px;
+}
+
+@media (max-width: 991.98px) {
+  .film-poster-hero {
+    max-height: 260px;
+  }
+  .hero-film-posters {
+    min-height: 0;
+  }
+  .development-showcase {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: 0;
+    width: 100%;
+  }
+  .development-showcase .process-step {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .app-showcase {
+    height: auto;
+    min-height: 0;
+  }
 }
 
 .hero-text {
@@ -432,7 +511,13 @@ body {
   justify-content: center;
   animation: slideInRight 0.8s ease-out 0.2s both;
   position: relative;
-  min-height: 400px;
+  min-height: 0;
+}
+
+@media (min-width: 992px) {
+  .hero-image-desktop {
+    min-height: 400px;
+  }
 }
 
 @keyframes slideInRight {
@@ -818,20 +903,31 @@ body {
   opacity: 0.8;
 }
 
-/* Bootstrap carousel indicators — match previous pill / dot style */
+/* Bootstrap carousel indicators — below content on mobile, overlaid on lg+ */
 .hero-carousel-indicators {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 1.25rem;
-  margin: 0 auto;
-  padding: 0;
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  margin: 0.75rem auto 0;
+  padding: 0 0.5rem 0.25rem;
   transform: none;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.2rem;
   z-index: 15;
+}
+
+@media (min-width: 992px) {
+  .hero-carousel-indicators {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1.25rem;
+    margin: 0 auto;
+    padding: 0;
+  }
 }
 
 .hero-carousel-indicators [data-bs-target] {
